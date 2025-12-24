@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Cash Master 6688</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💵</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #1e40af;
+      --secondary-color: #3b82f6;
+      --accent-color: #10b981;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --bg-light: #f8fafc;
+      --white: #ffffff;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-light);
+      min-height: 100vh;
+      color: var(--text-primary);
+    }
+
+    .header {
+      background: white;
+      box-shadow: var(--shadow);
+      padding: 1rem 0;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+      filter: none;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logout-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .dashboard-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-value,
+    .currency-count {
+      transition: all 0.3s ease;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .detection-section {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .detection-feed {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .current-detection {
+      background: var(--bg-light);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .detection-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    #statusIcon {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    #statusIcon.detecting {
+      color: #10b981;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .detected-item {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .new-detection {
+      animation: pulseDetection 0.6s ease-in-out;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    @keyframes pulseDetection {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+      }
+
+      100% {
+        transform: scale(1.05);
+      }
+    }
+
+    .detecting {
+      color: #10b981 !important;
+      animation: blink 1s infinite;
+    }
+
+    .ready {
+      color: #6b7280 !important;
+    }
+
+    @keyframes blink {
+
+      0%,
+      50% {
+        opacity: 1;
+      }
+
+      51%,
+      100% {
+        opacity: 0.5;
+      }
+    }
+
+    .item-icon {
+      font-size: 3rem;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+      border-radius: 50%;
+      color: white;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-type {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .item-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .detection-log {
+      background: var(--bg-light);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .detection-log h3 {
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .log-container {
+      max-height: 300px;
+      overflow-y: auto;
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .log-item {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-item.new {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .log-time {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .currency-list {
+      background: var(--bg-light);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .currency-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .currency-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .currency-count {
+      background: var(--accent-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .grand-total {
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .grand-total-value {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .start-detection-btn {
+      background: linear-gradient(45deg, var(--accent-color), #059669);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 2rem auto;
+      transition: transform 0.3s ease;
+    }
+
+    .start-detection-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .reset-btn {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .reset-btn:hover {
+      background: #f57c00;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .detection-feed {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard-container {
+        padding: 0 1rem;
+      }
+    }
+
+    /* Summary Partitions Styles */
+    .summary-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .summary-partition {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+
+    .partition-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .coins-partition .partition-header {
+      color: #1e40af;
+    }
+
+    .coins-partition .partition-header i {
+      font-size: 1.4rem;
+      color: #1e40af;
+    }
+
+    .notes-partition .partition-header {
+      color: #1c7a4e;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-denomination {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+
+    .summary-count {
+      background: var(--bg-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .summary-amount {
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+
+    .partition-total {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--primary-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .coins-partition .partition-total {
+      color: #09288f;
+    }
+
+    .notes-partition .partition-total {
+      color: #127357;
+    }
+
+    .partition-total span:last-child {
+      white-space: nowrap;
+      display: inline-block;
+      width: 80px;
+      text-align: left;
+      padding-left: 0px;
+    }
+
+    @media (max-width: 768px) {
+      .summary-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .coins-list {
+      margin: 1rem 0;
+    }
+
+    .coin-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+      /* Enhanced 3D Effect */
+      background: linear-gradient(145deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(245, 248, 255, 0.95) 25%,
+          rgba(235, 242, 255, 0.9) 50%,
+          rgba(225, 235, 255, 0.95) 75%,
+          rgba(240, 245, 255, 1) 100%);
+
+      border-radius: 12px;
+      box-shadow:
+        0 4px 8px rgba(30, 64, 175, 0.12),
+        0 2px 4px rgba(0, 0, 0, 0.08),
+        inset 0 2px 4px rgba(255, 255, 255, 0.9),
+        inset 0 -2px 4px rgba(30, 64, 175, 0.08),
+        inset 2px 0 4px rgba(255, 255, 255, 0.5),
+        inset -2px 0 4px rgba(30, 64, 175, 0.05);
+
+      border: 1px solid rgba(30, 64, 175, 0.15);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: perspective(1000px) rotateX(2deg) translateZ(0);
+      position: relative;
+    }
+
+    .coin-row::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      background: linear-gradient(145deg,
+          rgba(255, 255, 255, 0.8) 0%,
+          rgba(30, 64, 175, 0.1) 50%,
+          rgba(255, 255, 255, 0.8) 100%);
+      border-radius: 12px;
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .coin-row:hover {
+      transform: perspective(1000px) rotateX(-1deg) translateY(-4px) translateZ(10px);
+      box-shadow:
+        0 8px 16px rgba(30, 64, 175, 0.18),
+        0 4px 8px rgba(0, 0, 0, 0.12),
+        inset 0 3px 6px rgba(255, 255, 255, 0.95),
+        inset 0 -3px 6px rgba(30, 64, 175, 0.12),
+        inset 3px 0 6px rgba(255, 255, 255, 0.6),
+        inset -3px 0 6px rgba(30, 64, 175, 0.08);
+
+      background: linear-gradient(145deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(248, 250, 255, 0.98) 25%,
+          rgba(240, 245, 255, 0.95) 50%,
+          rgba(232, 240, 255, 0.98) 75%,
+          rgba(245, 248, 255, 1) 100%);
+    }
+
+    .coin-row:active {
+      transform: perspective(1000px) rotateX(1deg) translateY(-1px) translateZ(2px);
+      transition: all 0.1s ease;
+    }
+
+    .coin-row:last-child {
+      border-bottom: none;
+    }
+
+    .bracket {
+      display: none;
+    }
+
+    .coin-denomination {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .coin-count {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: center;
+      min-width: 40px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .coin-total {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      white-space: nowrap;
+      display: inline-block;
+      width: 80px;
+      text-align: left;
+      padding-left: 17px;
+    }
+
+    .coin-header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .header-denomination {
+      text-align: left;
+    }
+
+    .header-count {
+      text-align: center;
+      min-width: 40px;
+    }
+
+    .header-value {
+      text-align: left;
+      width: 80px;
+    }
+
+    /* Remove old coin card styles */
+    .coin-summary-card,
+    .coin-info,
+    .coin-stats,
+    .coin-count-display,
+    .coin-total-display,
+    .coins-header {
+      display: none;
+    }
+
+    .notes-list {
+      margin: 1rem 0;
+    }
+
+    .note-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+      /* Enhanced 3D Effect - Dark Green Theme */
+      background: linear-gradient(145deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(240, 253, 244, 0.95) 25%,
+          rgba(220, 252, 231, 0.9) 50%,
+          rgba(187, 247, 208, 0.95) 75%,
+          rgba(235, 252, 240, 1) 100%);
+
+      border-radius: 12px;
+      box-shadow:
+        0 4px 8px rgba(5, 150, 105, 0.15),
+        0 2px 4px rgba(0, 0, 0, 0.08),
+        inset 0 2px 4px rgba(255, 255, 255, 0.9),
+        inset 0 -2px 4px rgba(5, 150, 105, 0.12),
+        inset 2px 0 4px rgba(255, 255, 255, 0.5),
+        inset -2px 0 4px rgba(5, 150, 105, 0.08);
+
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: perspective(1000px) rotateX(2deg) translateZ(0);
+      position: relative;
+    }
+
+    .note-row::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      background: linear-gradient(145deg,
+          rgba(255, 255, 255, 0.8) 0%,
+          rgba(5, 150, 105, 0.12) 50%,
+          rgba(255, 255, 255, 0.8) 100%);
+      border-radius: 12px;
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .note-row:hover {
+      transform: perspective(1000px) rotateX(-1deg) translateY(-4px) translateZ(10px);
+      box-shadow:
+        0 8px 16px rgba(5, 150, 105, 0.22),
+        0 4px 8px rgba(0, 0, 0, 0.12),
+        inset 0 3px 6px rgba(255, 255, 255, 0.95),
+        inset 0 -3px 6px rgba(5, 150, 105, 0.15),
+        inset 3px 0 6px rgba(255, 255, 255, 0.6),
+        inset -3px 0 6px rgba(5, 150, 105, 0.1);
+
+      background: linear-gradient(145deg,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(243, 254, 246, 0.98) 25%,
+          rgba(225, 253, 235, 0.95) 50%,
+          rgba(195, 251, 218, 0.98) 75%,
+          rgba(240, 253, 244, 1) 100%);
+    }
+
+    .note-row:active {
+      transform: perspective(1000px) rotateX(1deg) translateY(-1px) translateZ(2px);
+      transition: all 0.1s ease;
+    }
+
+    .note-row:last-child {
+      border-bottom: none;
+    }
+
+    .note-denomination {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #059669;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .note-count {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #059669;
+      text-align: center;
+      min-width: 40px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .note-total {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #059669;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      white-space: nowrap;
+      display: inline-block;
+      width: 80px;
+      text-align: left;
+      padding-left: 0px;
+    }
+
+    .note-header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background: #127357;
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">💵</div>
+        Cash Master 6688
+      </div>
+      <div class="user-info">
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <!-- Live Detection Feed -->
+    <div class="detection-section">
+      <h2 class="section-title">
+        <i class="fas fa-radar"></i>
+        Live Detection Feed
+      </h2>
+
+      <div class="detection-feed">
+        <!-- Coins Detection -->
+        <div class="current-detection">
+          <h3 style="margin-bottom: 1rem; color: #1e40af;">
+            <i class="fas fa-coins"></i> Coins Detection
+          </h3>
+          <div class="detection-status" id="coinsDetectionStatus">
+            <i class="fas fa-circle" id="coinsStatusIcon"></i>
+            <span id="coinsStatusText">Ready to detect coins</span>
+          </div>
+
+          <div class="detected-item" id="detectedCoin">
+            <div class="item-icon" id="coinIcon">🪙</div>
+            <div class="item-details">
+              <div class="item-type" id="coinType">No coin detected</div>
+              <div class="item-value" id="coinValue">Rs. 0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Detection -->
+        <div class="current-detection">
+          <h3 style="margin-bottom: 1rem; color: #10b981;">
+            <i class="fas fa-money-bill"></i> Notes Detection
+          </h3>
+          <div class="detection-status" id="notesDetectionStatus">
+            <i class="fas fa-circle" id="notesStatusIcon"></i>
+            <span id="notesStatusText">Ready to detect notes</span>
+          </div>
+
+          <div class="detected-item" id="detectedNote">
+            <div class="item-icon" id="noteIcon">💵</div>
+            <div class="item-details">
+              <div class="item-type" id="noteType">No note detected</div>
+              <div class="item-value" id="noteValue">Rs. 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Partitions -->
+    <div class="summary-section">
+      <div class="summary-partition coins-partition">
+        <div class="partition-header">
+          <i class="fas fa-coins"></i>
+          Coins Summary
+        </div>
+
+        <div class="coins-list">
+          <!-- Column Headers -->
+          <div class="coin-header">
+            <div class="header-denomination"></div>
+            <div class="header-count">Count</div>
+            <div class="header-value">Value</div>
+          </div>
+
+          <!-- Rs. 1 Coin -->
+          <div class="coin-row">
+            <div class="coin-denomination">Rs. 1</div>
+            <div class="coin-count" id="coins-1-count">0</div>
+            <div class="coin-total" id="coins-1-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 2 Coin -->
+          <div class="coin-row">
+            <div class="coin-denomination">Rs. 2</div>
+            <div class="coin-count" id="coins-2-count">0</div>
+            <div class="coin-total" id="coins-2-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 5 Coin -->
+          <div class="coin-row">
+            <div class="coin-denomination">Rs. 5</div>
+            <div class="coin-count" id="coins-5-count">0</div>
+            <div class="coin-total" id="coins-5-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 10 Coin -->
+          <div class="coin-row">
+            <div class="coin-denomination">Rs. 10</div>
+            <div class="coin-count" id="coins-10-count">0</div>
+            <div class="coin-total" id="coins-10-total">Rs. 0</div>
+          </div>
+        </div>
+
+        <div class="partition-total">
+          <span>Total value of Coins:</span>
+          <span id="coins-total-value">Rs. 0</span>
+        </div>
+      </div>
+      <div class="summary-partition notes-partition">
+        <div class="partition-header">
+          <i class="fas fa-money-bill"></i>
+          Notes Summary
+        </div>
+        <div class="notes-list">
+          <!-- Column Headers -->
+          <div class="note-header">
+            <div class="header-denomination"></div>
+            <div class="header-count">Count</div>
+            <div class="header-value">Value</div>
+          </div>
+
+          <!-- Rs. 20 Note -->
+          <div class="note-row">
+            <div class="note-denomination">Rs. 20</div>
+            <div class="note-count" id="notes-20-count">0</div>
+            <div class="note-total" id="notes-20-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 50 Note -->
+          <div class="note-row">
+            <div class="note-denomination">Rs. 50</div>
+            <div class="note-count" id="notes-50-count">0</div>
+            <div class="note-total" id="notes-50-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 100 Note -->
+          <div class="note-row">
+            <div class="note-denomination">Rs. 100</div>
+            <div class="note-count" id="notes-100-count">0</div>
+            <div class="note-total" id="notes-100-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 500 Note -->
+          <div class="note-row">
+            <div class="note-denomination">Rs. 500</div>
+            <div class="note-count" id="notes-500-count">0</div>
+            <div class="note-total" id="notes-500-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 1000 Note -->
+          <div class="note-row">
+            <div class="note-denomination">Rs. 1000</div>
+            <div class="note-count" id="notes-1000-count">0</div>
+            <div class="note-total" id="notes-1000-total">Rs. 0</div>
+          </div>
+
+          <!-- Rs. 5000 Note -->
+          <div class="note-row">
+            <div class="note-denomination">Rs. 5000</div>
+            <div class="note-count" id="notes-5000-count">0</div>
+            <div class="note-total" id="notes-5000-total">Rs. 0</div>
+          </div>
+        </div>
+        <div class="partition-total">
+          <span>Total value of Notes:</span>
+          <span id="notes-total">Rs. 0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="grand-total">
+      <div class="grand-total-value" id="grandTotal">Rs. 0.00</div>
+      <div>Grand Total Value</div>
+    </div><br><br>
+
+
+    <!-- Reset Button -->
+    <button class="reset-btn" onclick="resetDetection()" style="background-color: #ff9800; margin-left: 10px;">
+      <i class="fas fa-refresh"></i>
+      Reset Counts
+    </button>
+  </div>
+
+  <!-- Add Firebase SDKs before closing </body> tag -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCNRTPhRgNlQBS8_eSrb-PE-sKxwHT7AE0",
+      authDomain: "hardware-project-be.firebaseapp.com",
+      databaseURL: "https://hardware-project-be-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "hardware-project-be",
+      storageBucket: "hardware-project-be.appspot.com",
+      messagingSenderId: "888345078779",
+      appId: "1:888345078779:web:57e987837de9a7ccd6b95e",
+      measurementId: "G-N6RE72ZDLK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+
+  <script>
+    // Sample data for demonstration
+    let detectionData = {
+      coins: {
+        10: 0,
+        5: 0,
+        2: 0,
+        1: 0
+      },
+      notes: {
+        5000: 0,
+        1000: 0,
+        500: 0,
+        100: 0,
+        50: 0,
+        20: 0
+      }
+    };
+
+    let isDetecting = false;
+    let detectionInterval;
+    let detectionLog = [];
+
+    function startDetection() {
+      if (isDetecting) {
+        stopDetection();
+        return;
+      }
+
+      isDetecting = true;
+      const button = document.querySelector('.start-detection-btn');
+      button.innerHTML = '<i class="fas fa-stop"></i> Stop Detection';
+      button.style.backgroundColor = '#f44336';
+
+      // Update status
+      document.getElementById('statusText').textContent = 'Detection Active';
+      document.getElementById('statusIcon').className = 'fas fa-circle detecting';
+
+      alert('Starting currency detection...\nHardware will now detect and sort coins and notes.');
+
+      detectionInterval = setInterval(() => {
+        simulateHardwareDetection();
+        updateDashboard();
+      }, 2000);
+    }
+
+    function stopDetection() {
+      isDetecting = false;
+      clearInterval(detectionInterval);
+
+      const button = document.querySelector('.start-detection-btn');
+      button.innerHTML = '<i class="fas fa-play"></i> Start Currency Detection';
+      button.style.backgroundColor = '#4CAF50';
+
+      // Update status
+      document.getElementById('statusText').textContent = 'Detection Stopped';
+      document.getElementById('statusIcon').className = 'fas fa-circle';
+
+      alert('Detection stopped.\nFinal counts saved.');
+    }
+
+    function simulateHardwareDetection() {
+      const coinTypes = [10, 5, 2, 1];
+      const noteTypes = [5000, 1000, 500, 100, 50, 20];
+
+      // Randomly detect 0-2 items per cycle
+      const detectedItems = Math.floor(Math.random() * 3);
+
+      for (let i = 0; i < detectedItems; i++) {
+        let detectedItem;
+
+        if (Math.random() > 0.5) {
+          // Detect a coin
+          const coinType = coinTypes[Math.floor(Math.random() * coinTypes.length)];
+          detectionData.coins[coinType]++;
+          detectedItem = {
+            type: 'coin',
+            value: coinType,
+            icon: '🪙',
+            name: `Rs. ${coinType} Coin`
+          };
+          console.log(`🪙 Detected: Rs. ${coinType} Coin`);
+        } else {
+          // Detect a note
+          const noteType = noteTypes[Math.floor(Math.random() * noteTypes.length)];
+          detectionData.notes[noteType]++;
+          detectedItem = {
+            type: 'note',
+            value: noteType,
+            icon: '💵',
+            name: `Rs. ${noteType} Note`
+          };
+          console.log(`💵 Detected: Rs. ${noteType} Note`);
+        }
+
+        // Show current detection
+        showCurrentDetection(detectedItem);
+
+        // Add to log
+        addToDetectionLog(detectedItem);
+      }
+    }
+
+    function showCurrentDetection(item) {
+      console.log('� Showing current detection:', item);
+
+      // Get elements
+      const coinsStatusIcon = document.getElementById('coinsStatusIcon');
+      const coinsStatusText = document.getElementById('coinsStatusText');
+      const coinIcon = document.getElementById('coinIcon');
+      const coinType = document.getElementById('coinType');
+      const coinValue = document.getElementById('coinValue');
+      const detectedCoin = document.getElementById('detectedCoin');
+
+      const notesStatusIcon = document.getElementById('notesStatusIcon');
+      const notesStatusText = document.getElementById('notesStatusText');
+      const noteIcon = document.getElementById('noteIcon');
+      const noteType = document.getElementById('noteType');
+      const noteValue = document.getElementById('noteValue');
+      const detectedNote = document.getElementById('detectedNote');
+
+      if (item.type === 'coin') {
+        // Update coins detection status
+        if (coinsStatusIcon) coinsStatusIcon.className = 'fas fa-circle detecting';
+        if (coinsStatusText) coinsStatusText.textContent = 'Coin Detected!';
+        if (coinIcon) coinIcon.textContent = item.icon;
+        if (coinType) coinType.textContent = 'Coin detected';
+        if (coinValue) coinValue.textContent = `Rs. ${item.value}`;
+
+        // Add animation
+        if (detectedCoin) detectedCoin.classList.add('new-detection');
+
+        // Reset after delay
+        setTimeout(() => {
+          if (detectedCoin) detectedCoin.classList.remove('new-detection');
+          if (coinsStatusIcon) coinsStatusIcon.className = 'fas fa-circle ready';
+          if (coinsStatusText) coinsStatusText.textContent = 'Ready to detect coins';
+          if (coinIcon) coinIcon.textContent = '🪙';
+          if (coinType) coinType.textContent = 'No coin detected';
+          if (coinValue) coinValue.textContent = 'Rs. 0';
+        }, 2000);
+
+      } else if (item.type === 'note') {
+        // Update notes detection status
+        if (notesStatusIcon) notesStatusIcon.className = 'fas fa-circle detecting';
+        if (notesStatusText) notesStatusText.textContent = 'Note Detected!';
+        if (noteIcon) noteIcon.textContent = item.icon;
+        if (noteType) noteType.textContent = 'Note detected';
+        if (noteValue) noteValue.textContent = `Rs. ${item.value}`;
+
+        // Add animation
+        if (detectedNote) detectedNote.classList.add('new-detection');
+
+        // Reset after delay
+        setTimeout(() => {
+          if (detectedNote) detectedNote.classList.remove('new-detection');
+          if (notesStatusIcon) notesStatusIcon.className = 'fas fa-circle ready';
+          if (notesStatusText) notesStatusText.textContent = 'Ready to detect notes';
+          if (noteIcon) noteIcon.textContent = '💵';
+          if (noteType) noteType.textContent = 'No note detected';
+          if (noteValue) noteValue.textContent = 'Rs. 0';
+        }, 2000);
+      }
+    }
+
+    function addToDetectionLog(item) {
+      // Skip log functionality for now to avoid errors
+      console.log('📝 Detection logged:', item);
+    }
+
+    function updateDetectionLogDisplay() {
+      // Skip for now to avoid errors
+      console.log('📊 Log display updated');
+    }
+
+    // New function to update the coin summary section
+    // Updated function to handle your Firebase data structure
+    function setupCoinTotalsListener() {
+      console.log('🔥 Setting up Firebase listener for coin_totals...');
+
+      const coinTotalsRef = firebase.database().ref('coin_totals');
+
+      coinTotalsRef.on('value', (snapshot) => {
+        const coinTotalsData = snapshot.val();
+        console.log('🚨 Raw Firebase data:', coinTotalsData);
+
+        if (coinTotalsData) {
+          if (!window.detectionData) {
+            initializeDetectionData();
+          }
+
+          Object.entries(coinTotalsData).forEach(([key, value]) => {
+            console.log(`🔍 Raw key from Firebase: "${key}"`);
+            console.log(`🔍 Raw value from Firebase: ${value}`);
+
+            // Try multiple regex patterns to catch your key format
+            let coinMatch = key.match(/Detected:\s*Rs_\s*(\d+)/i);
+
+            // If first pattern fails, try alternatives
+            if (!coinMatch) {
+              coinMatch = key.match(/Rs_?\s*(\d+)/i);
+            }
+            if (!coinMatch) {
+              coinMatch = key.match(/(\d+)/); // Just extract any number
+            }
+
+            if (coinMatch && coinMatch[1]) {
+              const coinValue = parseInt(coinMatch[1]);
+              console.log(`🎯 Extracted coin value: ${coinValue}`);
+
+              if (window.detectionData.coins.hasOwnProperty(coinValue)) {
+                const oldCount = window.detectionData.coins[coinValue];
+                window.detectionData.coins[coinValue] = value || 0;
+                console.log(`✅ Successfully updated Rs.${coinValue}: ${oldCount} -> ${value}`);
+              } else {
+                console.warn(`⚠️ Coin value ${coinValue} not in supported coins:`, Object.keys(window.detectionData.coins));
+              }
+            } else {
+              console.error(`❌ Could not extract coin value from: "${key}"`);
+            }
+          });
+
+          console.log('🔍 Final detectionData.coins:', window.detectionData.coins);
+          updateDashboard();
+        }
+      });
+    }
+
+
+
+    // Replace your existing Firebase listener functions with this unified approach
+
+function setupUnifiedFirebaseListeners() {
+  console.log('🔥 Setting up unified Firebase listeners...');
+
+  // Ensure detection data exists
+  if (!window.detectionData) {
+    initializeDetectionData();
+  }
+
+  // Listen to coin_totals
+  const coinTotalsRef = firebase.database().ref('coin_totals');
+  coinTotalsRef.on('value', (snapshot) => {
+    const coinTotalsData = snapshot.val();
+    console.log('🪙 Coin totals from Firebase:', coinTotalsData);
+
+    if (coinTotalsData) {
+      Object.entries(coinTotalsData).forEach(([key, value]) => {
+        const coinMatch = key.match(/Detected:\s*Rs_\s*(\d+)/i) || key.match(/Rs_?\s*(\d+)/i);
+        
+        if (coinMatch && coinMatch[1]) {
+          const coinValue = parseInt(coinMatch[1]);
+          if (window.detectionData.coins.hasOwnProperty(coinValue)) {
+            const oldCount = window.detectionData.coins[coinValue];
+            window.detectionData.coins[coinValue] = value || 0;
+            
+            console.log(`✅ Updated coin Rs.${coinValue}: ${oldCount} -> ${value}`);
+            
+            if (value > oldCount) {
+              showCurrentDetection({
+                type: 'coin',
+                value: coinValue,
+                icon: '🪙',
+                name: `Rs. ${coinValue} Coin`
+              });
+            }
+          }
+        }
+      });
+      
+      console.log('🪙 Final coins data:', window.detectionData.coins);
+      updateDashboard();
+    }
+  });
+
+  // Listen to sorting_log for notes
+  const sortingLogRef = firebase.database().ref('sorting_log');
+  sortingLogRef.on('child_added', (snapshot) => {
+    const detectedItem = snapshot.val();
+    console.log('💵 New note detected in sorting_log:', detectedItem);
+
+    if (detectedItem.status === 'sorting_started') {
+      const noteValue = Number(detectedItem.value);
+      if (window.detectionData.notes.hasOwnProperty(noteValue)) {
+        window.detectionData.notes[noteValue]++;
+        console.log(`✅ Updated note Rs.${noteValue}: ${window.detectionData.notes[noteValue]}`);
+
+        showCurrentDetection({
+          type: 'note',
+          value: noteValue,
+          icon: '💵',
+          name: `Rs. ${noteValue} Note`
+        });
+      }
+    }
+    
+    console.log('💵 Final notes data:', window.detectionData.notes);
+    updateDashboard();
+  });
+
+  console.log('✅ Unified Firebase listeners setup complete');
+}
+
+// Simplified updateDashboard that doesn't reset data
+function updateDashboard() {
+  console.log('📊 Updating dashboard...');
+  console.log('📊 Current coins data:', window.detectionData.coins);
+  console.log('📊 Current notes data:', window.detectionData.notes);
+
+  let coinsTotal = 0;
+  let notesTotal = 0;
+
+  // Update coins display
+  Object.entries(window.detectionData.coins).forEach(([value, count]) => {
+    const countElement = document.getElementById(`coins-${value}-count`);
+    const totalElement = document.getElementById(`coins-${value}-total`);
+
+    if (countElement && totalElement) {
+      countElement.textContent = count;
+      const individualTotal = parseInt(value) * count;
+      totalElement.textContent = `Rs. ${individualTotal}`;
+      coinsTotal += individualTotal;
+      console.log(`🪙 Display updated Rs.${value}: count=${count}, total=Rs.${individualTotal}`);
+    }
+  });
+
+  // Update notes display
+  Object.entries(window.detectionData.notes).forEach(([value, count]) => {
+    const countElement = document.getElementById(`notes-${value}-count`);
+    const totalElement = document.getElementById(`notes-${value}-total`);
+
+    if (countElement && totalElement) {
+      countElement.textContent = count;
+      const individualTotal = parseInt(value) * count;
+      totalElement.textContent = `Rs. ${individualTotal}`;
+      notesTotal += individualTotal;
+    }
+  });
+
+  // Update totals
+  const coinsTotalElement = document.querySelector('.coins-partition .partition-total span:last-child');
+  if (coinsTotalElement) {
+    coinsTotalElement.textContent = `Rs. ${coinsTotal}`;
+  }
+
+  const notesTotalElement = document.querySelector('.notes-partition .partition-total span:last-child');
+  if (notesTotalElement) {
+    notesTotalElement.textContent = `Rs. ${notesTotal}`;
+  }
+
+  const grandTotal = coinsTotal + notesTotal;
+  const grandTotalElement = document.querySelector('.grand-total-value');
+  if (grandTotalElement) {
+    grandTotalElement.textContent = `Rs. ${grandTotal}`;
+  }
+
+  console.log(`📈 Totals - Coins: Rs.${coinsTotal}, Notes: Rs.${notesTotal}, Grand: Rs.${grandTotal}`);
+}
+
+// Updated DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('📄 Page loading...');
+  
+  // Initialize everything
+  initializeDetectionData();
+  initializeDetectionDisplay();
+  updateDashboard();
+  
+  // Use the unified listener instead of separate ones
+  setupUnifiedFirebaseListeners();
+  
+  console.log('✅ Page initialization complete');
+});
+
+
+    function updateDashboard() {
+      console.log('📊 Updating dashboard with data:', window.detectionData);
+
+      let coinsTotal = 0;
+      let notesTotal = 0;
+
+      // Update coin counts and calculate totals
+      Object.entries(window.detectionData.coins).forEach(([value, count]) => {
+        const countElementId = `coins-${value}-count`;
+        const totalElementId = `coins-${value}-total`;
+        const countElement = document.getElementById(countElementId);
+        const totalElement = document.getElementById(totalElementId);
+
+        console.log(`🪙 Updating ${countElementId}: ${count} coins`);
+        console.log(`🔍 Count element found:`, countElement);
+        console.log(`🔍 Total element found:`, totalElement);
+
+        if (countElement) {
+          countElement.textContent = count;
+          const individualTotal = parseInt(value) * count;
+          coinsTotal += individualTotal;
+
+          // Update individual total
+          if (totalElement) {
+            totalElement.textContent = `Rs. ${individualTotal}`;
+          }
+
+          console.log(`✅ Updated Rs.${value}: Count=${count}, Total=Rs.${individualTotal}`);
+        } else {
+          console.error(`❌ Element not found: ${countElementId}`);
+        }
+      });
+
+      // Update notes counts and calculate totals
+      Object.entries(window.detectionData.notes).forEach(([value, count]) => {
+        const countElementId = `notes-${value}-count`;
+        const totalElementId = `notes-${value}-total`;
+        const countElement = document.getElementById(countElementId);
+        const totalElement = document.getElementById(totalElementId);
+
+        if (countElement) {
+          countElement.textContent = count;
+          const individualTotal = parseInt(value) * count;
+          notesTotal += individualTotal;
+
+          if (totalElement) {
+            totalElement.textContent = `Rs. ${individualTotal}`;
+          }
+        }
+      });
+
+      // Update coins total display
+      const coinsTotalElement = document.getElementById('coins-total-value');
+      if (coinsTotalElement) {
+        coinsTotalElement.textContent = `Rs. ${coinsTotal}`;
+        console.log(`💰 Updated coins total: Rs. ${coinsTotal}`);
+      } else {
+        // Alternative selector if the ID doesn't exist
+        const coinsTotalAlt = document.querySelector('.coins-partition .partition-total span:last-child');
+        if (coinsTotalAlt) {
+          coinsTotalAlt.textContent = `Rs. ${coinsTotal}`;
+          console.log(`💰 Updated coins total (alt): Rs. ${coinsTotal}`);
+        }
+      }
+
+      // Update notes total display
+      const notesTotalElement = document.getElementById('notes-total');
+      if (notesTotalElement) {
+        notesTotalElement.textContent = `Rs. ${notesTotal}`;
+      } else {
+        const notesTotalAlt = document.querySelector('.notes-partition .partition-total span:last-child');
+        if (notesTotalAlt) {
+          notesTotalAlt.textContent = `Rs. ${notesTotal}`;
+        }
+      }
+
+      // Update grand total
+      const grandTotal = coinsTotal + notesTotal;
+      const grandTotalElement = document.querySelector('.grand-total-value');
+      if (grandTotalElement) {
+        grandTotalElement.textContent = `Rs. ${grandTotal}`;
+      }
+
+      console.log(`📈 Dashboard updated - Coins: Rs.${coinsTotal}, Notes: Rs.${notesTotal}, Grand Total: Rs.${grandTotal}`);
+    }
+
+    // function updateDashboard() {
+    //   console.log('📊 Updating dashboard with data:', window.detectionData);
+
+    //   let coinsTotal = 0;
+    //   let notesTotal = 0;
+
+    //   // Update coin counts and calculate totals
+    //   Object.entries(window.detectionData.coins).forEach(([value, count]) => {
+    //     const elementId = `coins-${value}-count`;
+    //     const totalElementId = `coins-${value}-total`;
+    //     const element = document.getElementById(elementId);
+    //     const totalElement = document.getElementById(totalElementId);
+
+    //     console.log(`🪙 Updating ${elementId}: ${count} coins`);
+
+    //     if (element) {
+    //       element.textContent = count;
+    //       const individualTotal = parseInt(value) * count;
+    //       coinsTotal += individualTotal;
+
+    //       // Update individual total
+    //       if (totalElement) {
+    //         totalElement.textContent = `Rs. ${individualTotal}`;
+    //       }
+    //     }
+    //   });
+
+    //   // Update notes counts and calculate totals
+    //   Object.entries(window.detectionData.notes).forEach(([value, count]) => {
+    //     const elementId = `notes-${value}-count`;
+    //     const totalElementId = `notes-${value}-total`;
+    //     const element = document.getElementById(elementId);
+    //     const totalElement = document.getElementById(totalElementId);
+
+    //     if (element) {
+    //       element.textContent = count;
+    //       const individualTotal = parseInt(value) * count;
+    //       notesTotal += individualTotal;
+
+    //       if (totalElement) {
+    //         totalElement.textContent = `Rs. ${individualTotal}`;
+    //       }
+    //     }
+    //   });
+
+    //   // Update coins total display
+    //   const coinsTotalElement = document.querySelector('.coins-partition .partition-total span:last-child');
+    //   if (coinsTotalElement) {
+    //     coinsTotalElement.textContent = `Rs. ${coinsTotal}`;
+    //     console.log(`💰 Updated coins total: Rs. ${coinsTotal}`);
+    //   }
+
+    //   // Update notes total display
+    //   const notesTotalElement = document.querySelector('.notes-partition .partition-total span:last-child');
+    //   if (notesTotalElement) {
+    //     notesTotalElement.textContent = `Rs. ${notesTotal}`;
+    //   }
+
+    //   // Update grand total
+    //   const grandTotal = coinsTotal + notesTotal;
+    //   const grandTotalElement = document.querySelector('.grand-total-value');
+    //   if (grandTotalElement) {
+    //     grandTotalElement.textContent = `Rs. ${grandTotal}`;
+    //   }
+    // }
+
+
+
+
+    // New function to update the notes summary section
+    function updateNotesDashboard() {
+      console.log('💵 Updating notes summary...');
+
+      let notesTotal = 0;
+
+      // Update individual note counts and calculate totals
+      Object.entries(window.detectionData.notes).forEach(([value, count]) => {
+        const elementId = `notes-${value}-count`;
+        const totalElementId = `notes-${value}-total`;
+        const element = document.getElementById(elementId);
+        const totalElement = document.getElementById(totalElementId);
+
+        if (element) {
+          element.textContent = count;
+          const individualTotal = parseInt(value) * count;
+          notesTotal += individualTotal;
+
+          if (totalElement) {
+            totalElement.textContent = `Rs. ${individualTotal}`;
+          }
+        }
+      });
+
+      // Update the total value of all notes
+      const notesTotalElement = document.querySelector('.notes-partition .partition-total span:last-child');
+      if (notesTotalElement) {
+        notesTotalElement.textContent = `Rs. ${notesTotal}`;
+      }
+
+      // Return the calculated total
+      return notesTotal;
+    }
+
+    // This function updates the Coin Summary section of the dashboard
+    // and returns the total value of all coins.
+    function updateCoinsDashboard() {
+      console.log('🪙 Updating coins summary...');
+
+      let coinsTotal = 0;
+
+      // This loop goes through each coin type (e.g., 1, 2, 5, 10)
+      // in your detectionData object and updates the corresponding
+      // elements on the dashboard.
+      Object.entries(window.detectionData.coins).forEach(([value, count]) => {
+        // These IDs (e.g., 'coins-1-count') are used to find the correct
+        // HTML elements on the page.
+        const elementId = `coins-${value}-count`;
+        const totalElementId = `coins-${value}-total`;
+        const element = document.getElementById(elementId);
+        const totalElement = document.getElementById(totalElementId);
+
+        // If the element exists, update its text content.
+        if (element) {
+          element.textContent = count;
+          const individualTotal = parseInt(value) * count;
+          coinsTotal += individualTotal;
+
+          // Update the individual total value.
+          if (totalElement) {
+            totalElement.textContent = `Rs. ${individualTotal}`;
+          }
+        }
+      });
+
+      // Update the grand total display for coins.
+      const coinsTotalElement = document.querySelector('.coins-partition .partition-total span:last-child');
+      if (coinsTotalElement) {
+        coinsTotalElement.textContent = `Rs. ${coinsTotal}`;
+        console.log(`💰 Updated coins total: Rs. ${coinsTotal}`);
+      }
+
+      // The function returns the total value, which will be used
+      // in the main updateDashboard() function.
+      return coinsTotal;
+    }
+    // // The main dashboard update function
+    // function updateDashboard() {
+    //   console.log('📊 Updating dashboard with data:', window.detectionData);
+
+    //   // Call the dedicated functions for each section
+    //   const coinsTotal = updateCoinsDashboard();
+    //   const notesTotal = updateNotesDashboard();
+
+    //   // Update grand total
+    //   const grandTotal = coinsTotal + notesTotal;
+    //   const grandTotalElement = document.querySelector('.grand-total-value');
+    //   if (grandTotalElement) {
+    //     grandTotalElement.textContent = `Rs. ${grandTotal}`;
+    //   }
+    // }
+    function resetDetection() {
+      if (confirm('Are you sure you want to reset all counts?')) {
+        console.log('🔄 Resetting all detection data...');
+
+        // Reset local data
+        window.detectionData = {
+          coins: { 10: 0, 5: 0, 2: 0, 1: 0 },
+          notes: { 5000: 0, 1000: 0, 500: 0, 100: 0, 50: 0, 20: 0 }
+        };
+
+        // Reset detection log
+        window.detectionLog = [];
+
+        // Clear Firebase coin_totals data (where Raspberry Pi writes)
+        const coinTotalsRef = firebase.database().ref('coin_totals');
+        coinTotalsRef.remove()
+          .then(() => {
+            console.log('✅ Firebase coin_totals data cleared');
+            // Force update all displays
+            updateDashboard();
+            updateDetectionLogDisplay();
+            updateGrandTotal();
+          })
+          .catch((error) => {
+            console.error('❌ Error clearing Firebase coin_totals:', error);
+            // Still update UI even if Firebase fails
+            updateDashboard();
+            updateDetectionLogDisplay();
+            updateGrandTotal();
+          });
+      }
+    }
+
+    function updateGrandTotal() {
+      const grandTotalElement = document.querySelector('.grand-total-value');
+      if (grandTotalElement) {
+        grandTotalElement.textContent = 'Rs. 0';
+      }
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        // Clear username from localStorage
+        localStorage.removeItem('username');
+        // Redirect to index.html page
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Function to get username from localStorage or URL parameters
+    function getUsername() {
+      // Try to get username from localStorage first
+      let username = localStorage.getItem('username');
+
+      // If not found in localStorage, try to get from URL parameters
+      if (!username) {
+        const urlParams = new URLSearchParams(window.location.search);
+        username = urlParams.get('username');
+
+        // If found in URL, save it to localStorage for future use
+        if (username) {
+          localStorage.setItem('username', username);
+        }
+      }
+
+      // Return username or default value
+      return username || 'User';
+    }
+
+    // Function to display username
+    // function displayUsername() {
+    //   const usernameElement = document.getElementById('username');
+    //   const username = getUsername();
+
+    //   // Extract first name (first word) from the username
+    //   const firstName = username.split(' ')[0];
+
+    //   usernameElement.textContent = firstName;
+    // }
+
+    // Alternative: Clear detection status on page load
+    function initializeDetectionDisplay() {
+      console.log('🔄 Initializing clean detection display...');
+
+      // Reset coin detection display
+      const coinsStatusIcon = document.getElementById('coinsStatusIcon');
+      const coinsStatusText = document.getElementById('coinsStatusText');
+      const coinIcon = document.getElementById('coinIcon');
+      const coinType = document.getElementById('coinType');
+      const coinValue = document.getElementById('coinValue');
+
+      if (coinsStatusIcon) coinsStatusIcon.className = 'fas fa-circle ready';
+      if (coinsStatusText) coinsStatusText.textContent = 'Ready to detect coins';
+      if (coinIcon) coinIcon.textContent = '🪙';
+      if (coinType) coinType.textContent = 'No coin detected';
+      if (coinValue) coinValue.textContent = 'Rs. 0';
+
+      // Reset note detection display
+      const notesStatusIcon = document.getElementById('notesStatusIcon');
+      const notesStatusText = document.getElementById('notesStatusText');
+      const noteIcon = document.getElementById('noteIcon');
+      const noteType = document.getElementById('noteType');
+      const noteValue = document.getElementById('noteValue');
+
+      if (notesStatusIcon) notesStatusIcon.className = 'fas fa-circle ready';
+      if (notesStatusText) notesStatusText.textContent = 'Ready to detect notes';
+      if (noteIcon) noteIcon.textContent = '💵';
+      if (noteType) noteType.textContent = 'No note detected';
+      if (noteValue) noteValue.textContent = 'Rs. 0';
+
+      console.log('✅ Detection display initialized');
+    }
+
+    // Load saved summary data from Firebase on page load
+    function loadSavedSummaryData() {
+      console.log('📊 Loading saved summary data from Firebase...');
+
+      const summaryRef = firebase.database().ref('summary_data');
+
+      summaryRef.once('value', (snapshot) => {
+        const savedData = snapshot.val();
+
+        if (savedData) {
+          console.log('✅ Found saved summary data:', savedData);
+
+          // Make sure window.detectionData exists
+          if (!window.detectionData) {
+            initializeDetectionData();
+          }
+
+          // DON'T overwrite with saved data - let Firebase coin_totals be the source of truth
+          console.log('ℹ️ Skipping saved data load - using live Firebase data instead');
+        } else {
+          console.log('ℹ️ No saved summary data found, starting fresh');
+        }
+      }).catch((error) => {
+        console.error('❌ Error loading saved data:', error);
+      });
+    }
+
+    // Save summary data to Firebase
+    function saveSummaryData() {
+      console.log('💾 Saving summary data to Firebase...');
+
+      const summaryRef = firebase.database().ref('summary_data');
+      const dataToSave = {
+        coins: window.detectionData.coins,
+        notes: window.detectionData.notes,
+        lastUpdated: Date.now()
+      };
+
+      summaryRef.set(dataToSave).then(() => {
+        console.log('✅ Summary data saved successfully');
+      }).catch((error) => {
+        console.error('❌ Error saving summary data:', error);
+      });
+    }
+
+    // Firebase real-time listener for coin detection
+    // function setupFirebaseListener() {
+    //   console.log('🔥 Setting up Firebase listener for coin detection...');
+
+    //   // Listen to coin_totals (where your Raspberry Pi is writing)
+    //   const coinTotalsRef = firebase.database().ref('coin_totals');
+    //   coinTotalsRef.on('value', (snapshot) => {
+    //     const coinTotalsData = snapshot.val();
+    //     console.log('🚨 Coin totals data from Firebase:', coinTotalsData);
+
+    //     if (coinTotalsData) {
+    //       // Make sure window.detectionData exists
+    //       if (!window.detectionData) {
+    //         initializeDetectionData();
+    //       }
+
+    //       // Update coin counts from Firebase data
+    //       Object.entries(coinTotalsData).forEach(([key, value]) => {
+    //         console.log(`🪙 Processing ${key}: ${value}`);
+
+    //         // Extract coin value from key (e.g., "Rs_1" -> 1, "Rs.1" -> 1)
+    //         const coinMatch = key.match(/Rs[._]?(\d+)/i);
+    //         if (coinMatch) {
+    //           const coinValue = parseInt(coinMatch[1]);
+    //           console.log(`🎯 Extracted coin value: ${coinValue}`);
+
+    //           if (window.detectionData.coins.hasOwnProperty(coinValue)) {
+    //             const oldCount = window.detectionData.coins[coinValue];
+    //             window.detectionData.coins[coinValue] = value || 0;
+
+    //             console.log(`📊 Updated Rs.${coinValue}: ${oldCount} -> ${value}`);
+
+    //             // Show animation if count increased
+    //             if (value > oldCount) {
+    //               console.log(`📈 ${key} count increased from ${oldCount} to ${value}`);
+
+    //               const detectedItem = {
+    //                 type: 'coin',
+    //                 value: coinValue,
+    //                 icon: '🪙',
+    //                 name: `Rs. ${coinValue} Coin`
+    //               };
+
+    //               showCurrentDetection(detectedItem);
+    //             }
+    //           } else {
+    //             console.warn(`⚠️ Coin value ${coinValue} not supported`);
+    //           }
+    //         } else {
+    //           console.warn(`⚠️ Could not extract coin value from key: ${key}`);
+    //         }
+    //       });
+
+    //       // Update dashboard
+    //       updateDashboard();
+
+    //       // Save to Firebase
+    //       saveSummaryData();
+    //     }
+    //   });
+
+    //   console.log('✅ Firebase listener setup complete');
+    // }
+
+
+    function setupFirebaseListener() {
+      console.log('🔥 Setting up Firebase listener for sorting log...');
+
+      const sortingLogRef = firebase.database().ref('sorting_log');
+
+
+
+      // Listen for every new item added to the log
+      sortingLogRef.on('child_added', (snapshot) => {
+        const detectedItem = snapshot.val();
+        console.log('🚨 New item detected in sorting_log:', detectedItem);
+
+        if (!window.detectionData) {
+          initializeDetectionData();
+        }
+        if (detectedItem.status === 'sorting_started') {
+          const noteValue = Number(detectedItem.value);
+          if (window.detectionData.notes.hasOwnProperty(noteValue)) {
+            window.detectionData.notes[noteValue]++;
+            console.log(`📊 Updated Rs.${noteValue} note count: ${window.detectionData.notes[noteValue]}`);
+
+            showCurrentDetection({
+              type: 'note',
+              value: noteValue,
+              icon: '💵',
+              name: `Rs. ${noteValue} Note`
+            });
+          }
+        }
+
+        // Always update the dashboard after processing a new item
+        updateDashboard();
+
+        // setupCoinTotalsListener();
+      });
+    }
+
+
+    // New function to handle coin totals
+    function setupCoinTotalsListener() {
+      console.log('🔥 Setting up Firebase listener for coin_totals...');
+
+      const coinTotalsRef = firebase.database().ref('coin_totals');
+
+      // Listen for the entire value of the 'coin_totals' node
+      coinTotalsRef.on('value', (snapshot) => {
+        const coinTotalsData = snapshot.val();
+        console.log('🚨 Coin totals data from Firebase:', coinTotalsData);
+
+        if (coinTotalsData) {
+          // Update the local detectionData.coins object
+          if (!window.detectionData) {
+            initializeDetectionData();
+          }
+
+          // Loop through the data from Firebase and update the counts
+          Object.entries(coinTotalsData).forEach(([key, value]) => {
+            const coinMatch = key.match(/Rs[._]?(\d+)/i);
+            if (coinMatch) {
+              const coinValue = parseInt(coinMatch[1]);
+              if (window.detectionData.coins.hasOwnProperty(coinValue)) {
+                // Check if the count has increased and show a live animation
+                if (value > window.detectionData.coins[coinValue]) {
+                  showCurrentDetection({
+                    type: 'coin',
+                    value: coinValue,
+                    icon: '🪙',
+                    name: `Rs. ${coinValue} Coin`
+                  });
+                }
+                // Update the local count with the latest total from Firebase
+                window.detectionData.coins[coinValue] = value || 0;
+              }
+            }
+          });
+
+          // Update the dashboard after all coin counts are updated
+          updateDashboard();
+        }
+      });
+    }
+
+    // Firebase real-time listener for note detection
+    function setupFirebaseNoteListener() {
+      console.log('🔥 Setting up Firebase listener for note detection...');
+
+      const noteTotalsRef = firebase.database().ref('note_totals');
+      noteTotalsRef.on('value', (snapshot) => {
+        const noteTotalsData = snapshot.val();
+        console.log('🚨 Note totals data from Firebase:', noteTotalsData);
+
+        if (noteTotalsData) {
+          if (!window.detectionData) {
+            initializeDetectionData();
+          }
+
+          Object.entries(noteTotalsData).forEach(([key, value]) => {
+            const noteMatch = key.match(/Rs[._]?(\d+)/i);
+            if (noteMatch) {
+              const noteValue = parseInt(noteMatch[1]);
+              if (window.detectionData.notes.hasOwnProperty(noteValue)) {
+                const oldCount = window.detectionData.notes[noteValue];
+                window.detectionData.notes[noteValue] = value || 0;
+
+                // Always show animation if value > 0 (for live detection)
+                if (value > 0 && value >= oldCount) {
+                  const detectedItem = {
+                    type: 'note',
+                    value: noteValue,
+                    icon: '💵',
+                    name: `Rs. ${noteValue} Note`
+                  };
+                  showCurrentDetection(detectedItem);
+                }
+              }
+            }
+          });
+
+          // Update dashboard
+          updateDashboard();
+
+          // Save to Firebase
+          saveSummaryData();
+        }
+      });
+
+      console.log('✅ Firebase note listener setup complete');
+    }
+
+    // Initialize detection data structure
+    function initializeDetectionData() {
+      console.log('🔧 Initializing detection data structure...');
+
+      window.detectionData = {
+        coins: { 10: 0, 5: 0, 2: 0, 1: 0 },
+        notes: { 5000: 0, 1000: 0, 500: 0, 100: 0, 50: 0, 20: 0 }
+      };
+
+      console.log('✅ Detection data initialized:', window.detectionData);
+    }
+
+    // Add debug listener to see ALL Firebase data
+    function debugFirebaseData() {
+      console.log('🔍 Setting up debug listeners...');
+
+      // Listen to the ROOT of the database to see ALL data
+      const rootRef = firebase.database().ref('/');
+      rootRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        console.log('🔍 ENTIRE Firebase database:', data);
+      });
+
+      // Listen to ALL changes in coins_detected
+      const coinsRef = firebase.database().ref('coins_detected');
+      coinsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        console.log('🔍 ALL coins_detected data:', data);
+      });
+
+      // Listen to new additions
+      coinsRef.on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        console.log('🔍 NEW child added to coins_detected:', data);
+      });
+
+      // Also check if data is being written to other paths
+      const altPaths = ['coin_detected', 'coins', 'sensor_data', 'ir_sensor'];
+      altPaths.forEach(path => {
+        firebase.database().ref(path).on('value', (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            console.log(`🔍 Data found in ${path}:`, data);
+          }
+        });
+      });
+    }
+
+    // Test Firebase connection
+    function testFirebaseConnection() {
+      console.log('🧪 Testing Firebase connection...');
+
+      // Test write
+      const testRef = firebase.database().ref('test_connection');
+      testRef.set({
+        message: 'Website connected successfully',
+        timestamp: Date.now()
+      }).then(() => {
+        console.log('✅ Firebase connection working!');
+
+        // Test read coins_detected
+        const coinsRef = firebase.database().ref('sorting_log');
+        coinsRef.limitToLast(5).once('value', (snapshot) => {
+          const data = snapshot.val();
+          console.log('📊 Latest coin data:', data);
+        });
+      }
+      ).catch((error) => {
+        console.error('❌ Firebase connection failed:', error);
+      });
+    }
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('📄 Page loading...');
+
+
+      // testFirebaseConnection();
+      // Initialize data structure FIRST
+      initializeDetectionData();
+
+      // displayUsername();
+      initializeDetectionDisplay();
+      updateDashboard();
+      loadSavedSummaryData();
+
+      setupCoinTotalsListener();
+      // Setup Firebase listener
+      // setupFirebaseListener();
+
+      // setupFirebaseNoteListener();
+      // setupCoinTotalsListener();
+
+      // Add debug listener
+      debugFirebaseData();
+
+      // Test connection after 2 seconds
+      setTimeout(() => {
+        testFirebaseConnection();
+      }, 2000);
+
+      console.log('✅ Page initialization complete');
+    });
+
+    let lastProcessedNoteKey = null; .3
+    let isFirstNoteListenerRun = true;
+
+    function setupCurrentNoteDetectionListener() {
+      // ...all code inside...
+      const notesRef = firebase.database().ref('detected_notes');
+      notesRef.limitToLast(1).on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        const key = snapshot.key;
+        const noteValue = data && data.type === "note" ? data.value : null;
+        const noteIcon = document.getElementById('noteIcon');
+        const noteType = document.getElementById('noteType');
+        const noteValueElem = document.getElementById('noteValue');
+        const detectedNote = document.getElementById('detectedNote');
+        const notesStatusIcon = document.getElementById('notesStatusIcon');
+        const notesStatusText = document.getElementById('notesStatusText');
+
+        // Only process if it's a valid note denomination and not already processed
+        const validNotes = [20, 50, 100, 500, 1000, 5000];
+
+        // Skip the first event on page load (which is the latest existing note)
+        if (isFirstNoteListenerRun) {
+          isFirstNoteListenerRun = false;
+          lastProcessedNoteKey = key;
+          return;
+        }
+
+        if (noteValue && validNotes.includes(Number(noteValue)) && key !== lastProcessedNoteKey) {
+          lastProcessedNoteKey = key; // Mark this detection as processed
+
+          // Show detected note in live feed
+          if (noteIcon) noteIcon.textContent = '💵';
+          if (noteType) noteType.textContent = 'Note detected';
+          if (noteValueElem) noteValueElem.textContent = `Rs. ${noteValue}`;
+          if (detectedNote) detectedNote.classList.add('new-detection');
+          if (notesStatusIcon) notesStatusIcon.className = 'fas fa-circle detecting';
+          if (notesStatusText) notesStatusText.textContent = 'Note Detected!';
+
+          // Update summary counts and grand total
+          if (!window.detectionData) initializeDetectionData();
+          window.detectionData.notes[noteValue] = (window.detectionData.notes[noteValue] || 0) + 1;
+          updateDashboard();
+
+          // Remove animation after 2 seconds
+          setTimeout(() => {
+            if (detectedNote) detectedNote.classList.remove('new-detection');
+            if (notesStatusIcon) notesStatusIcon.className = 'fas fa-circle ready';
+            if (notesStatusText) notesStatusText.textContent = 'Ready to detect notes';
+            if (noteIcon) noteIcon.textContent = '💵';
+            if (noteType) noteType.textContent = 'No note detected';
+            if (noteValueElem) noteValueElem.textContent = 'Rs. 0';
+          }, 2000);
+        }
+      });
+    }
+
+    // Make sure to call this in your DOMContentLoaded event (already present in your code)
+    document.addEventListener('DOMContentLoaded', function () {
+      // ...existing code...
+      // ...existing code...
+    });
+
+    // Save summary data and grand total on refresh or close
+    window.addEventListener('beforeunload', function (e) {
+      saveSummaryData();
+    });
+  </script>
+</body>
