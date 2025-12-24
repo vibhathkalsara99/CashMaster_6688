@@ -27,7 +27,7 @@ A responsive web application monitors real-time currency data, provides user int
 * **Hardware:** Raspberry Pi 4 Model B, Arduino Uno, CNC Shield V3, Stepper motors, IR sensors, Solenoid locks
 * **Software:**
 
-  * Python (Image Recognition & Core Logic)
+  * Python + MobileNetV2 (Image Recognition & Core Logic)
   * Arduino C/C++ (Hardware control, sensors, actuators)
   * HTML, CSS, JavaScript (Web interface)
 * **Database:** Firebase (for real-time currency data)
