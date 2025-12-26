@@ -29,7 +29,7 @@ This project was developed collaboratively. The following contributors played ke
 <li>Project Leader</li>
 <li>CoreXY motion control</li>
 <li>PCB component logic</li>
-<li>LCD display interface development</li>
+<li>LCD interface development</li>
 </ul>
 </div>
 </td>
