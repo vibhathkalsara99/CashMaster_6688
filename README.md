@@ -10,6 +10,8 @@ CashMaster 6688 combines hardware and software components to streamline currency
 
 A responsive web application monitors real-time currency data, provides user interaction, and maintains comprehensive logs.
 
+Dataset and trained models are available upon request.
+
 ---
 ## Contributors
 
@@ -40,7 +42,7 @@ This project was developed collaboratively. The following contributors played ke
 <br><br>
 <div align="left">
 <ul style="padding-left:10px;margin:0;">
-<li>Image recognition script</li>
+<li>Image Recognition Model Training and Detection</li>
 <li>Raspberry Pi control logic</li>
 <li>Z-axis movement mechanism</li>
 </ul>
